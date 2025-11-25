@@ -247,10 +247,51 @@ class ExpenseTracker {
             return 0;
         }
 
-        return this.expenses.filter(e => {
+        let total = 0;
+
+        this.expenses.forEach(e => {
             const expenseDate = new Date(e.fullDate);
-            return expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate;
-        }).reduce((sum, e) => sum + e.amount, 0);
+
+            if (e.frequency === 'once') {
+                // One-time expenses: only count if within date range
+                if (expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate) {
+                    total += e.amount;
+                }
+            } else {
+                // Recurring expenses: calculate occurrences within date range
+                const occurrences = this.calculateOccurrences(expenseDate, e.frequency, this.filterStartDate, this.filterEndDate);
+                total += e.amount * occurrences;
+            }
+        });
+
+        return total;
+    }
+
+    calculateOccurrences(startDate, frequency, filterStart, filterEnd) {
+        let count = 0;
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= filterEnd) {
+            if (currentDate >= filterStart && currentDate <= filterEnd) {
+                count++;
+            }
+
+            // Move to next occurrence based on frequency
+            if (frequency === 'daily') {
+                currentDate.setDate(currentDate.getDate() + 1);
+            } else if (frequency === 'weekly') {
+                currentDate.setDate(currentDate.getDate() + 7);
+            } else if (frequency === 'monthly') {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            } else if (frequency === 'annually') {
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+            }
+
+            // Safety check to prevent infinite loops
+            if (count > 10000) break;
+        }
+
+        return count;
     }
 
     getFilteredExpenses() {
@@ -260,7 +301,15 @@ class ExpenseTracker {
 
         return this.expenses.filter(e => {
             const expenseDate = new Date(e.fullDate);
-            return expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate;
+
+            if (e.frequency === 'once') {
+                // One-time: only show if in range
+                return expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate;
+            } else {
+                // Recurring: show if it occurs at least once in range
+                const occurrences = this.calculateOccurrences(expenseDate, e.frequency, this.filterStartDate, this.filterEndDate);
+                return occurrences > 0;
+            }
         });
     }
 
@@ -506,7 +555,7 @@ class LearningApp {
                     <div style="font-size: 3em; color: var(--primary-green); font-weight: 700; margin-bottom: 10px;">
                         ${this.quizScore} / ${this.questions.length}
                     </div>
-                    <div style="font-size: 2em; background: linear-gradient(135deg, var(--primary-red), var(--primary-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">
+                    <div style="font-size: 2em; color: var(--primary-green); font-weight: 700;">
                         ${percentage}%
                     </div>
                 </div>
