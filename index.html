@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Master - Professional Learning & Productivity</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="animated-background">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header class="glass-header">
+            <div class="header-content">
+                <h1 class="title-main">✨ Life Master</h1>
+                <p class="subtitle">Professional Learning & Productivity Suite</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <span class="stat-label">Tasks</span>
+                    <span class="stat-value" id="headerTasks">0</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="stat-label">Learned</span>
+                    <span class="stat-value" id="headerLearned">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVIGATION -->
+        <nav class="glass-nav">
+            <button class="nav-btn active" data-tab="todos">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Tasks</span>
+            </button>
+            <button class="nav-btn" data-tab="expenses">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">Finances</span>
+            </button>
+            <button class="nav-btn" data-tab="learning">
+                <span class="nav-icon">📚</span>
+                <span class="nav-label">Learning</span>
+            </button>
+            <button class="nav-btn" data-tab="habits">
+                <span class="nav-icon">⭐</span>
+                <span class="nav-label">Habits</span>
+            </button>
+        </nav>
+
+        <!-- TODO LIST SECTION -->
+        <section id="todos" class="tab-content active">
+            <div class="section-header">
+                <h2>My Tasks</h2>
+                <span class="section-emoji">🎯</span>
+            </div>
+
+            <div class="glass-card input-card">
+                <div class="input-wrapper">
+                    <input type="text" id="todoInput" placeholder="What's your next task?" class="glass-input">
+                    <div class="color-picker-wrapper">
+                        <label for="todoColor" class="color-label">Color:</label>
+                        <div class="color-options">
+                            <input type="radio" name="todoColor" value="red" id="color-red" class="color-radio">
+                            <label for="color-red" class="color-label-radio red-color">●</label>
+
+                            <input type="radio" name="todoColor" value="green" id="color-green" class="color-radio" checked>
+                            <label for="color-green" class="color-label-radio green-color">●</label>
+
+                            <input type="radio" name="todoColor" value="tan" id="color-tan" class="color-radio">
+                            <label for="color-tan" class="color-label-radio tan-color">●</label>
+
+                            <input type="radio" name="todoColor" value="blue" id="color-blue" class="color-radio">
+                            <label for="color-blue" class="color-label-radio blue-color">●</label>
+                        </div>
+                    </div>
+                </div>
+                <button id="addTodoBtn" class="btn-glass-primary">Add Task</button>
+            </div>
+
+            <div class="filter-section">
+                <button class="filter-btn active glass-small" data-filter="all">All Tasks</button>
+                <button class="filter-btn glass-small" data-filter="active">Active</button>
+                <button class="filter-btn glass-small" data-filter="completed">Completed</button>
+            </div>
+
+            <ul id="todoList" class="glass-list"></ul>
+
+            <div class="glass-card stats-card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-circle">
+                            <span id="todoTotal" class="stat-big">0</span>
+                        </div>
+                        <p>Total Tasks</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-circle">
+                            <span id="todoCompleted" class="stat-big">0</span>
+                        </div>
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-circle progress-circle">
+                            <span id="todoPercent" class="stat-big">0%</span>
+                        </div>
+                        <p>Progress</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPENSE TRACKER SECTION -->
+        <section id="expenses" class="tab-content">
+            <div class="section-header">
+                <h2>Financial Tracker</h2>
+                <span class="section-emoji">💵</span>
+            </div>
+
+            <div class="glass-card expense-input-card">
+                <div class="expense-form-grid">
+                    <input type="text" id="expenseDescription" placeholder="What did you buy?" class="glass-input">
+                    <input type="number" id="expenseAmount" placeholder="Amount" min="0" step="0.01" class="glass-input">
+                    <select id="expenseCategory" class="glass-input">
+                        <option value="">Select Category</option>
+                        <option value="food">🍔 Food & Dining</option>
+                        <option value="transport">🚗 Transportation</option>
+                        <option value="entertainment">🎮 Entertainment</option>
+                        <option value="education">📚 Education</option>
+                        <option value="utilities">⚡ Utilities</option>
+                        <option value="shopping">🛍️ Shopping</option>
+                        <option value="health">🏥 Health</option>
+                        <option value="other">📌 Other</option>
+                    </select>
+                    <button id="addExpenseBtn" class="btn-glass-primary">Add Expense</button>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <div class="glass-card summary-card">
+                    <h3>💹 Total Spent</h3>
+                    <p class="amount-large" id="totalSpent">$0.00</p>
+                </div>
+                <div class="glass-card summary-card">
+                    <h3>📅 This Month</h3>
+                    <p class="amount-large month" id="monthlySpent">$0.00</p>
+                </div>
+                <div class="glass-card summary-card">
+                    <h3>📊 Today</h3>
+                    <p class="amount-large" id="todaySpent">$0.00</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3>📈 Spending by Category</h3>
+                <div id="categoryBreakdown" class="category-chart"></div>
+            </div>
+
+            <div class="glass-card">
+                <h3>📝 Recent Transactions</h3>
+                <ul id="expenseList" class="glass-list"></ul>
+            </div>
+        </section>
+
+        <!-- LEARNING SECTION -->
+        <section id="learning" class="tab-content">
+            <div class="section-header">
+                <h2>Learning Hub</h2>
+                <span class="section-emoji">🧠</span>
+            </div>
+
+            <div class="glass-card learning-entry-card">
+                <h3>📖 Record What You Learned</h3>
+                <div class="journal-form">
+                    <input type="text" id="journalTopic" placeholder="Topic (e.g., JavaScript Basics)" class="glass-input">
+                    <textarea id="journalNotes" placeholder="Write your detailed notes here..." class="glass-input"></textarea>
+                    <input type="number" id="journalDifficulty" placeholder="Difficulty (1-10)" min="1" max="10" class="glass-input">
+                    <button id="addJournalBtn" class="btn-glass-primary">Save Entry</button>
+                </div>
+            </div>
+
+            <div class="glass-card quiz-card">
+                <h3>🎮 Quiz Master Game</h3>
+                <div id="quizContainer" class="quiz-container">
+                    <div id="quizSetup" class="quiz-setup">
+                        <p>Create custom questions to test your knowledge!</p>
+                        <div class="quiz-form">
+                            <input type="text" id="quizQuestion" placeholder="Ask a question..." class="glass-input">
+                            <input type="text" id="quizCorrectAnswer" placeholder="Correct answer..." class="glass-input">
+                            <input type="text" id="quizWrongAnswer1" placeholder="Wrong answer 1..." class="glass-input">
+                            <input type="text" id="quizWrongAnswer2" placeholder="Wrong answer 2..." class="glass-input">
+                            <button id="addQuizBtn" class="btn-glass-primary">Add Question</button>
+                        </div>
+                    </div>
+
+                    <div id="quizGame" class="quiz-game-container" style="display:none;">
+                        <div class="quiz-progress-section">
+                            <h3 id="quizQuestionDisplay"></h3>
+                            <div class="progress-bar-large">
+                                <div id="progressFill" class="progress-fill-large"></div>
+                            </div>
+                            <p class="progress-text">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">1</span></p>
+                        </div>
+                        <div id="quizAnswers" class="quiz-answers-grid"></div>
+                        <button id="nextQuestionBtn" class="btn-glass-primary" style="display:none; width: 100%; margin-top: 20px;">Next Question</button>
+                    </div>
+
+                    <button id="startQuizBtn" class="btn-glass-primary" style="display:none; width: 100%;">🚀 Start Quiz Game</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3>📚 Your Learning Journal</h3>
+                <ul id="journalList" class="glass-list"></ul>
+            </div>
+        </section>
+
+        <!-- HABITS SECTION -->
+        <section id="habits" class="tab-content">
+            <div class="section-header">
+                <h2>Habit Tracker</h2>
+                <span class="section-emoji">⭐</span>
+            </div>
+
+            <div class="glass-card habit-input-card">
+                <h3>🌟 Create New Habit</h3>
+                <div class="habit-form">
+                    <input type="text" id="habitName" placeholder="Habit name (e.g., Exercise, Read)" class="glass-input">
+                    <select id="habitFrequency" class="glass-input">
+                        <option value="">Select Frequency</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <button id="addHabitBtn" class="btn-glass-primary">Create Habit</button>
+                </div>
+            </div>
+
+            <div id="habitsList" class="habits-grid"></div>
+
+            <div class="glass-card">
+                <h3>🏆 Your Habits</h3>
+                <ul id="habitHistoryList" class="glass-list"></ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
