@@ -7,16 +7,16 @@
 }
 
 :root {
-    --primary-red: #FF6B6B;
-    --primary-green: #51CF66;
-    --primary-tan: #D4A574;
+    --primary-red: #DC2626;
+    --primary-green: #059669;
+    --primary-tan: #B8860B;
     --primary-white: #FFFFFF;
-    --glass-bg: rgba(255, 255, 255, 0.15);
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --text-dark: #2D3436;
-    --text-light: #636E72;
-    --accent-blue: #0984E3;
-    --success: #00B894;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-dark: #111827;
+    --text-light: #6B7280;
+    --accent-blue: #0F6FE8;
+    --success: #10B981;
 }
 
 body {
@@ -1165,5 +1165,119 @@ textarea.glass-input {
 
     .quiz-form {
         grid-template-columns: 1fr;
+    }
+}
+
+/* MODAL STYLES */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 25px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    backdrop-filter: blur(20px);
+}
+
+.modal-content h2 {
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+.modal-close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    transform: scale(1.2);
+    color: var(--primary-red);
+}
+
+.modal-body {
+    margin-bottom: 30px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--primary-green);
+}
+
+.detail-label {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95em;
+}
+
+.detail-value {
+    color: var(--text-dark);
+    font-size: 1em;
+    word-break: break-word;
+    text-align: right;
+    max-width: 60%;
+}
+
+.detail-value.amount {
+    font-weight: 700;
+    color: var(--primary-green);
+    font-size: 1.1em;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-actions .btn-glass-primary {
+    flex: 1;
+    max-width: 200px;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 25px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-value {
+        text-align: left;
+        max-width: 100%;
+        margin-top: 8px;
     }
 }

@@ -241,11 +241,6 @@ class ExpenseTracker {
         }).reduce((sum, e) => sum + e.amount, 0);
     }
 
-    getTodaySpent() {
-        const today = new Date().toLocaleDateString();
-        return this.expenses.filter(e => e.date === today)
-            .reduce((sum, e) => sum + e.amount, 0);
-    }
 
     getFilteredSpent() {
         if (!this.filterStartDate || !this.filterEndDate) {
@@ -283,7 +278,6 @@ class ExpenseTracker {
         // Update totals
         document.getElementById('totalSpent').textContent = '$' + this.getTotalSpent().toFixed(2);
         document.getElementById('monthlySpent').textContent = '$' + this.getMonthlySpent().toFixed(2);
-        document.getElementById('todaySpent').textContent = '$' + this.getTodaySpent().toFixed(2);
         document.getElementById('filteredSpent').textContent = '$' + this.getFilteredSpent().toFixed(2);
 
         // Update category breakdown
@@ -327,9 +321,9 @@ class ExpenseTracker {
             const completedClass = exp.completed ? 'completed' : '';
 
             return `
-            <li class="expense-item ${completedClass}">
+            <li class="expense-item ${completedClass}" style="cursor: pointer;" onclick="showTransactionDetails(${exp.id})">
                 <div style="display: flex; align-items: center; flex: 1; gap: 12px;">
-                    <div class="checkbox-circle ${exp.completed ? 'checked' : ''}" onclick="expenseTracker.toggleExpenseComplete(${exp.id})">
+                    <div class="checkbox-circle ${exp.completed ? 'checked' : ''}" onclick="event.stopPropagation(); expenseTracker.toggleExpenseComplete(${exp.id})">
                         ${exp.completed ? '<span class="checkmark">✓</span>' : ''}
                     </div>
                     <div class="expense-details">
@@ -338,7 +332,7 @@ class ExpenseTracker {
                     </div>
                 </div>
                 <span class="expense-amount">$${exp.amount.toFixed(2)}</span>
-                <button class="btn-action delete" onclick="expenseTracker.deleteExpense(${exp.id})">🗑️</button>
+                <button class="btn-action delete" onclick="event.stopPropagation(); expenseTracker.deleteExpense(${exp.id})">🗑️</button>
             </li>
         `}).join('');
     }
@@ -707,6 +701,47 @@ let todoApp;
 let expenseTracker;
 let learningApp;
 let habitsApp;
+
+// ============================================
+// TRANSACTION MODAL FUNCTIONS
+// ============================================
+
+function showTransactionDetails(expenseId) {
+    const expense = expenseTracker.expenses.find(e => e.id === expenseId);
+    if (!expense) return;
+
+    const categories = {
+        'food': '🍔 Food & Dining',
+        'transport': '🚗 Transportation',
+        'entertainment': '🎮 Entertainment',
+        'education': '📚 Education',
+        'utilities': '⚡ Utilities',
+        'shopping': '🛍️ Shopping',
+        'health': '🏥 Health',
+        'other': '📌 Other'
+    };
+
+    document.getElementById('modalDescription').textContent = expense.description;
+    document.getElementById('modalAmount').textContent = '$' + expense.amount.toFixed(2);
+    document.getElementById('modalCategory').textContent = categories[expense.category] || expense.category;
+    document.getElementById('modalDate').textContent = expense.date;
+    document.getElementById('modalFrequency').textContent = expense.frequency === 'once' ? 'One-Time' : expense.frequency.charAt(0).toUpperCase() + expense.frequency.slice(1);
+    document.getElementById('modalStatus').textContent = expense.completed ? '✓ Paid' : 'Pending';
+
+    document.getElementById('transactionModal').style.display = 'flex';
+}
+
+function closeTransactionModal() {
+    document.getElementById('transactionModal').style.display = 'none';
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('transactionModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     initTabs();

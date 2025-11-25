@@ -175,10 +175,6 @@
                     <p class="amount-large month" id="monthlySpent">$0.00</p>
                 </div>
                 <div class="glass-card summary-card">
-                    <h3>📊 Today</h3>
-                    <p class="amount-large" id="todaySpent">$0.00</p>
-                </div>
-                <div class="glass-card summary-card">
                     <h3>📈 Filtered Period</h3>
                     <p class="amount-large" id="filteredSpent">$0.00</p>
                 </div>
@@ -192,6 +188,43 @@
             <div class="glass-card">
                 <h3>📝 Transactions</h3>
                 <ul id="expenseList" class="glass-list"></ul>
+            </div>
+
+            <!-- Transaction Details Modal -->
+            <div id="transactionModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeTransactionModal()">&times;</span>
+                    <h2>Transaction Details</h2>
+                    <div class="modal-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Description:</span>
+                            <span class="detail-value" id="modalDescription"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Amount:</span>
+                            <span class="detail-value amount" id="modalAmount"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Category:</span>
+                            <span class="detail-value" id="modalCategory"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Date:</span>
+                            <span class="detail-value" id="modalDate"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Frequency:</span>
+                            <span class="detail-value" id="modalFrequency"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value" id="modalStatus"></span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-glass-primary" onclick="closeTransactionModal()">Close</button>
+                    </div>
+                </div>
             </div>
         </section>
 
