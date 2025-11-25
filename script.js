@@ -135,6 +135,8 @@ class TodoApp {
 class ExpenseTracker {
     constructor() {
         this.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        this.filterStartDate = null;
+        this.filterEndDate = null;
         this.init();
     }
 
@@ -143,6 +145,10 @@ class ExpenseTracker {
         document.getElementById('expenseAmount').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addExpense();
         });
+
+        document.getElementById('applyFilterBtn').addEventListener('click', () => this.applyFilter());
+        document.getElementById('resetFilterBtn').addEventListener('click', () => this.resetFilter());
+
         this.render();
     }
 
@@ -150,24 +156,33 @@ class ExpenseTracker {
         const desc = document.getElementById('expenseDescription').value.trim();
         const amount = parseFloat(document.getElementById('expenseAmount').value);
         const category = document.getElementById('expenseCategory').value;
+        const dateInput = document.getElementById('expenseDate').value;
+        const frequency = document.getElementById('expenseFrequency').value;
 
-        if (!desc || !amount || amount <= 0 || !category) {
-            alert('Please fill in all fields with valid amount');
+        if (!desc || !amount || amount <= 0 || !category || !dateInput) {
+            alert('Please fill in all fields with valid amount and date');
             return;
         }
+
+        const selectedDate = new Date(dateInput);
+        const formattedDate = selectedDate.toLocaleDateString();
 
         this.expenses.unshift({
             id: Date.now(),
             description: desc,
             amount,
             category,
-            date: new Date().toLocaleDateString(),
-            fullDate: new Date()
+            frequency,
+            date: formattedDate,
+            fullDate: selectedDate,
+            completed: false
         });
 
         document.getElementById('expenseDescription').value = '';
         document.getElementById('expenseAmount').value = '';
         document.getElementById('expenseCategory').value = '';
+        document.getElementById('expenseDate').value = '';
+        document.getElementById('expenseFrequency').value = 'once';
 
         this.save();
         this.render();
@@ -176,6 +191,37 @@ class ExpenseTracker {
     deleteExpense(id) {
         this.expenses = this.expenses.filter(e => e.id !== id);
         this.save();
+        this.render();
+    }
+
+    toggleExpenseComplete(id) {
+        const expense = this.expenses.find(e => e.id === id);
+        if (expense) {
+            expense.completed = !expense.completed;
+            this.save();
+            this.render();
+        }
+    }
+
+    applyFilter() {
+        const startDateInput = document.getElementById('filterStartDate').value;
+        const endDateInput = document.getElementById('filterEndDate').value;
+
+        if (!startDateInput || !endDateInput) {
+            alert('Please select both start and end dates');
+            return;
+        }
+
+        this.filterStartDate = new Date(startDateInput);
+        this.filterEndDate = new Date(endDateInput);
+        this.render();
+    }
+
+    resetFilter() {
+        this.filterStartDate = null;
+        this.filterEndDate = null;
+        document.getElementById('filterStartDate').value = '';
+        document.getElementById('filterEndDate').value = '';
         this.render();
     }
 
@@ -201,20 +247,33 @@ class ExpenseTracker {
             .reduce((sum, e) => sum + e.amount, 0);
     }
 
+    getFilteredSpent() {
+        if (!this.filterStartDate || !this.filterEndDate) {
+            return 0;
+        }
+
+        return this.expenses.filter(e => {
+            const expenseDate = new Date(e.fullDate);
+            return expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate;
+        }).reduce((sum, e) => sum + e.amount, 0);
+    }
+
+    getFilteredExpenses() {
+        if (!this.filterStartDate || !this.filterEndDate) {
+            return this.expenses;
+        }
+
+        return this.expenses.filter(e => {
+            const expenseDate = new Date(e.fullDate);
+            return expenseDate >= this.filterStartDate && expenseDate <= this.filterEndDate;
+        });
+    }
+
     getCategoryBreakdown() {
         const breakdown = {};
-        const categories = {
-            'food': '🍔 Food & Dining',
-            'transport': '🚗 Transportation',
-            'entertainment': '🎮 Entertainment',
-            'education': '📚 Education',
-            'utilities': '⚡ Utilities',
-            'shopping': '🛍️ Shopping',
-            'health': '🏥 Health',
-            'other': '📌 Other'
-        };
+        const expensesToCount = this.getFilteredExpenses();
 
-        this.expenses.forEach(e => {
+        expensesToCount.forEach(e => {
             breakdown[e.category] = (breakdown[e.category] || 0) + e.amount;
         });
         return breakdown;
@@ -225,6 +284,7 @@ class ExpenseTracker {
         document.getElementById('totalSpent').textContent = '$' + this.getTotalSpent().toFixed(2);
         document.getElementById('monthlySpent').textContent = '$' + this.getMonthlySpent().toFixed(2);
         document.getElementById('todaySpent').textContent = '$' + this.getTodaySpent().toFixed(2);
+        document.getElementById('filteredSpent').textContent = '$' + this.getFilteredSpent().toFixed(2);
 
         // Update category breakdown
         const breakdown = this.getCategoryBreakdown();
@@ -249,7 +309,9 @@ class ExpenseTracker {
 
         // Update expense list
         const list = document.getElementById('expenseList');
-        list.innerHTML = this.expenses.map(exp => {
+        const displayExpenses = this.getFilteredExpenses();
+
+        list.innerHTML = displayExpenses.map(exp => {
             const catLabel = {
                 'food': '🍔 Food & Dining',
                 'transport': '🚗 Transportation',
@@ -261,11 +323,19 @@ class ExpenseTracker {
                 'other': '📌 Other'
             }[exp.category] || exp.category;
 
+            const frequencyLabel = exp.frequency === 'once' ? '' : ` (${exp.frequency})`;
+            const completedClass = exp.completed ? 'completed' : '';
+
             return `
-            <li class="expense-item">
-                <div class="expense-details">
-                    <div class="expense-description">${exp.description}</div>
-                    <div class="expense-category">${catLabel} • ${exp.date}</div>
+            <li class="expense-item ${completedClass}">
+                <div style="display: flex; align-items: center; flex: 1; gap: 12px;">
+                    <div class="checkbox-circle ${exp.completed ? 'checked' : ''}" onclick="expenseTracker.toggleExpenseComplete(${exp.id})">
+                        ${exp.completed ? '<span class="checkmark">✓</span>' : ''}
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-description">${exp.description}</div>
+                        <div class="expense-category">${catLabel} • ${exp.date}${frequencyLabel}</div>
+                    </div>
                 </div>
                 <span class="expense-amount">$${exp.amount.toFixed(2)}</span>
                 <button class="btn-action delete" onclick="expenseTracker.deleteExpense(${exp.id})">🗑️</button>

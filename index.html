@@ -122,6 +122,7 @@
             </div>
 
             <div class="glass-card expense-input-card">
+                <h3>➕ Add New Expense</h3>
                 <div class="expense-form-grid">
                     <input type="text" id="expenseDescription" placeholder="What did you buy?" class="glass-input">
                     <input type="number" id="expenseAmount" placeholder="Amount" min="0" step="0.01" class="glass-input">
@@ -136,7 +137,31 @@
                         <option value="health">🏥 Health</option>
                         <option value="other">📌 Other</option>
                     </select>
+                    <input type="date" id="expenseDate" class="glass-input">
+                    <select id="expenseFrequency" class="glass-input">
+                        <option value="once">One-Time</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="annually">Annually</option>
+                    </select>
                     <button id="addExpenseBtn" class="btn-glass-primary">Add Expense</button>
+                </div>
+            </div>
+
+            <div class="glass-card filter-date-card">
+                <h3>🗓️ Filter by Date Range</h3>
+                <div class="date-filter-grid">
+                    <div class="date-input-group">
+                        <label for="filterStartDate">From:</label>
+                        <input type="date" id="filterStartDate" class="glass-input">
+                    </div>
+                    <div class="date-input-group">
+                        <label for="filterEndDate">To:</label>
+                        <input type="date" id="filterEndDate" class="glass-input">
+                    </div>
+                    <button id="applyFilterBtn" class="btn-glass-primary">Apply Filter</button>
+                    <button id="resetFilterBtn" class="btn-glass-secondary">Reset</button>
                 </div>
             </div>
 
@@ -153,6 +178,10 @@
                     <h3>📊 Today</h3>
                     <p class="amount-large" id="todaySpent">$0.00</p>
                 </div>
+                <div class="glass-card summary-card">
+                    <h3>📈 Filtered Period</h3>
+                    <p class="amount-large" id="filteredSpent">$0.00</p>
+                </div>
             </div>
 
             <div class="glass-card">
@@ -161,7 +190,7 @@
             </div>
 
             <div class="glass-card">
-                <h3>📝 Recent Transactions</h3>
+                <h3>📝 Transactions</h3>
                 <ul id="expenseList" class="glass-list"></ul>
             </div>
         </section>

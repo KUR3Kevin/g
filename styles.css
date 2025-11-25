@@ -634,13 +634,53 @@ body {
 
 .expense-form-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.5fr 1fr;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr;
     gap: 12px;
+}
+
+@media (max-width: 1200px) {
+    .expense-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 900px) {
     .expense-form-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* DATE FILTER */
+.filter-date-card {
+    margin-bottom: 20px;
+}
+
+.date-filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.date-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.date-input-group label {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.9em;
+}
+
+.date-input-group .glass-input {
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .date-filter-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
@@ -725,6 +765,16 @@ body {
 .expense-item:hover {
     background: rgba(255, 255, 255, 0.35);
     transform: translateX(5px);
+}
+
+.expense-item.completed {
+    opacity: 0.6;
+    background: rgba(0, 184, 148, 0.1);
+}
+
+.expense-item.completed .expense-description {
+    text-decoration: line-through;
+    color: var(--text-light);
 }
 
 .expense-details {
