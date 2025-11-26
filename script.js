@@ -323,6 +323,27 @@ class ExpenseTracker {
         return breakdown;
     }
 
+    getCategoryLabel(category) {
+        const labels = {
+            'food': '🍔 Food & Dining',
+            'groceries': '🛒 Groceries',
+            'transport': '🚗 Transportation',
+            'entertainment': '🎮 Entertainment',
+            'education': '📚 Education',
+            'utilities': '⚡ Utilities',
+            'shopping': '🛍️ Shopping',
+            'health': '🏥 Health',
+            'home': '🏠 Home/Rent',
+            'credit': '💳 Credit Cards',
+            'debt': '💰 Debt Payments',
+            'loans': '📋 Loans/Owe',
+            'insurance': '🛡️ Insurance',
+            'bank': '🏦 Bank Fees',
+            'other': '📌 Other'
+        };
+        return labels[category] || category;
+    }
+
     render() {
         // Update totals
         document.getElementById('totalSpent').textContent = '$' + this.getTotalSpent().toFixed(2);
@@ -332,20 +353,10 @@ class ExpenseTracker {
         // Update category breakdown
         const breakdown = this.getCategoryBreakdown();
         const categoryDiv = document.getElementById('categoryBreakdown');
-        const categories = {
-            'food': '🍔 Food & Dining',
-            'transport': '🚗 Transportation',
-            'entertainment': '🎮 Entertainment',
-            'education': '📚 Education',
-            'utilities': '⚡ Utilities',
-            'shopping': '🛍️ Shopping',
-            'health': '🏥 Health',
-            'other': '📌 Other'
-        };
 
         categoryDiv.innerHTML = Object.entries(breakdown).map(([cat, amount]) => `
             <div class="category-item">
-                <div class="category-name">${categories[cat] || cat}</div>
+                <div class="category-name">${this.getCategoryLabel(cat)}</div>
                 <div class="category-amount">$${amount.toFixed(2)}</div>
             </div>
         `).join('');
@@ -355,17 +366,7 @@ class ExpenseTracker {
         const displayExpenses = this.getFilteredExpenses();
 
         list.innerHTML = displayExpenses.map(exp => {
-            const catLabel = {
-                'food': '🍔 Food & Dining',
-                'transport': '🚗 Transportation',
-                'entertainment': '🎮 Entertainment',
-                'education': '📚 Education',
-                'utilities': '⚡ Utilities',
-                'shopping': '🛍️ Shopping',
-                'health': '🏥 Health',
-                'other': '📌 Other'
-            }[exp.category] || exp.category;
-
+            const catLabel = this.getCategoryLabel(exp.category);
             const frequencyLabel = exp.frequency === 'once' ? '' : ` (${exp.frequency})`;
             const completedClass = exp.completed ? 'completed' : '';
 
@@ -759,20 +760,9 @@ function showTransactionDetails(expenseId) {
     const expense = expenseTracker.expenses.find(e => e.id === expenseId);
     if (!expense) return;
 
-    const categories = {
-        'food': '🍔 Food & Dining',
-        'transport': '🚗 Transportation',
-        'entertainment': '🎮 Entertainment',
-        'education': '📚 Education',
-        'utilities': '⚡ Utilities',
-        'shopping': '🛍️ Shopping',
-        'health': '🏥 Health',
-        'other': '📌 Other'
-    };
-
     document.getElementById('modalDescription').textContent = expense.description;
     document.getElementById('modalAmount').textContent = '$' + expense.amount.toFixed(2);
-    document.getElementById('modalCategory').textContent = categories[expense.category] || expense.category;
+    document.getElementById('modalCategory').textContent = expenseTracker.getCategoryLabel(expense.category);
     document.getElementById('modalDate').textContent = expense.date;
     document.getElementById('modalFrequency').textContent = expense.frequency === 'once' ? 'One-Time' : expense.frequency.charAt(0).toUpperCase() + expense.frequency.slice(1);
     document.getElementById('modalStatus').textContent = expense.completed ? '✓ Paid' : 'Pending';
